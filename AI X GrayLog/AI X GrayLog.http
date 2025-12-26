@@ -1,0 +1,126 @@
+@AI_X_GrayLog_HostAddress = http://localhost:5269
+
+### Weather Forecast
+GET {{AI_X_GrayLog_HostAddress}}/api/weatherforecast
+Accept: application/json
+
+###
+
+### Graylog Webhook - 取得端點資訊
+GET {{AI_X_GrayLog_HostAddress}}/api/graylog/webhook/info
+Accept: application/json
+
+###
+
+### Graylog Webhook - 測試告警（一般優先等級）
+POST {{AI_X_GrayLog_HostAddress}}/api/graylog/webhook
+Content-Type: application/json
+
+{
+  "eventDefinitionId": "5d7a8c9b1234567890abcdef",
+  "eventDefinitionType": "aggregation-v1",
+  "eventDefinitionTitle": "磁碟空間不足告警",
+  "eventDefinitionDescription": "當磁碟使用率超過 85% 時觸發",
+  "jobDefinitionId": "job-123",
+  "jobTriggerId": "trigger-456",
+  "event": {
+    "id": "event-001",
+    "eventDefinitionId": "5d7a8c9b1234567890abcdef",
+    "eventDefinitionType": "aggregation-v1",
+    "timestamp": "2025-12-23T10:30:00.000Z",
+    "timerangeStart": "2025-12-23T10:25:00.000Z",
+    "timerangeEnd": "2025-12-23T10:30:00.000Z",
+    "message": "偵測到磁碟空間使用率過高",
+    "source": "graylog-server",
+    "priority": 2,
+    "alert": true,
+    "fields": {
+      "disk_usage": 87.5,
+      "hostname": "file-server-01",
+      "ip_address": "192.168.1.150",
+      "mount_point": "/data"
+    }
+  },
+  "backlog": []
+}
+
+###
+
+### Graylog Webhook - 高優先等級告警
+POST {{AI_X_GrayLog_HostAddress}}/api/graylog/webhook
+Content-Type: application/json
+
+{
+  "eventDefinitionId": "critical-alert-001",
+  "eventDefinitionType": "aggregation-v1",
+  "eventDefinitionTitle": "系統服務停止",
+  "eventDefinitionDescription": "關鍵服務意外停止",
+  "event": {
+    "id": "event-critical-002",
+    "message": "資料庫服務已停止運作",
+    "source": "monitoring-agent",
+    "priority": 3,
+    "alert": true,
+    "timestamp": "2025-12-23T10:35:00.000Z",
+    "fields": {
+      "service_name": "postgresql",
+      "hostname": "db-primary-01",
+      "exit_code": 1,
+      "last_error": "Connection refused"
+    }
+  }
+}
+
+###
+
+### Graylog Webhook - CPU 使用率告警
+POST {{AI_X_GrayLog_HostAddress}}/api/graylog/webhook
+Content-Type: application/json
+
+{
+  "eventDefinitionTitle": "高 CPU 使用率",
+  "eventDefinitionDescription": "CPU 使用率持續超過閾值",
+  "event": {
+    "id": "event-cpu-003",
+    "message": "CPU 使用率超過 80% 持續 5 分鐘",
+    "priority": 2,
+    "alert": true,
+    "timestamp": "2025-12-23T10:40:00.000Z",
+    "fields": {
+      "cpu_usage_percent": 85.7,
+      "hostname": "web-server-03",
+      "process": "java",
+      "pid": 12345
+    }
+  }
+}
+
+###
+
+### Graylog Webhook - 安全性告警
+POST {{AI_X_GrayLog_HostAddress}}/api/graylog/webhook
+Content-Type: application/json
+
+{
+  "eventDefinitionTitle": "可疑登入嘗試",
+  "eventDefinitionDescription": "偵測到多次失敗的登入嘗試",
+  "event": {
+    "id": "event-security-004",
+    "message": "在 5 分鐘內偵測到 10 次失敗的 SSH 登入嘗試",
+    "priority": 3,
+    "alert": true,
+    "timestamp": "2025-12-23T10:45:00.000Z",
+    "fields": {
+      "source_ip": "203.0.113.45",
+      "target_user": "root",
+      "failed_attempts": 10,
+      "hostname": "gateway-server",
+      "service": "ssh"
+    }
+  }
+}
+
+###
+
+
+
